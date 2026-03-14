@@ -1,6 +1,7 @@
 flask
 flask-cors
 pymysql
+mysql-connector-python
 gunicorn
 python-dotenv
 DBUtils
