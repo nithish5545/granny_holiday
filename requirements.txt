@@ -4,3 +4,4 @@ pymysql
 gunicorn
 python-dotenv
 DBUtils
+fpdf2
