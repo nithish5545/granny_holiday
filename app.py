@@ -3,9 +3,11 @@ import io
 import json
 from flask import Flask, render_template, request, redirect, session, url_for, send_file
 from fpdf import FPDF
-import mysql.connector
+import pymysql
+pymysql.install_as_MySQLdb()
 from mysql.connector import Error
 import config
+
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = config.SECRET_KEY
