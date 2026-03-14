@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body{background:#0f172a;color:white;text-align:center;font-family:Arial}
+        .card{background:#1e293b;padding:30px;width:450px;margin:40px auto;border-radius:15px}
+        img{width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:15px}
+        .btn{padding:10px 20px;margin:10px;border-radius:8px;text-decoration:none;font-weight:bold}
+        .edit{background:#38bdf8;color:black}
+        .logout{background:#ef4444;color:white}
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+<h2>My Profile</h2>
+
+{% if user.profile_image %}
+<img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}">
+{% else %}
+<img src="https://via.placeholder.com/120">
+{% endif %}
+
+<form action="/upload-photo" method="POST" enctype="multipart/form-data">
+<input type="file" name="photo" required>
+<button>Upload Photo</button>
+</form>
+
+<p><strong>Name:</strong> {{ user.name }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+
+<hr>
+
+<h3>Trip Summary</h3>
+<p>Total Trips: {{ total_trips }}</p>
+<p>Total Money Spent: ₹{{ total_spent }}</p>
+
+<hr>
+
+<a href="/edit-profile" class="btn edit">Edit Profile</a>
+<a href="/logout" class="btn logout">Logout</a>
+
+</div>
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Destination</h2>
+
+<form method="POST">
+<input name="name" placeholder="Name">
+<input name="hotel" placeholder="Hotel Cost">
+<input name="food" placeholder="Food Cost">
+<input name="sight" placeholder="Sightseeing">
+<input name="image" placeholder="Image URL">
+<input name="lat" placeholder="Latitude">
+<input name="lon" placeholder="Longitude">
+<button>Add</button>
+</form>
+
+<h3>Existing Destinations</h3>
+
+{% for d in destinations %}
+<p>{{ d.name }}</p>
+{% endfor %}

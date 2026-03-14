@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Successful — Tour Planner{% endblock %}
+
+{% block content %}
+<div class="success-wrapper">
+    <div class="success-card">
+        <div class="check-icon">🎉</div>
+        <h1>Booking Successful!</h1>
+
+        <div class="info-row">
+            <span class="label">Destination</span>
+            <span class="value">{{ trip.destination }}</span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Duration</span>
+            <span class="value">{{ trip.days }} days</span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Total Cost</span>
+            <span class="value">₹{{ trip.total_cost }}</span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Booking ID</span>
+            <span class="value">#{{ trip.id }}</span>
+        </div>
+
+        <div class="actions">
+            <a href="/download-receipt/{{ trip.id }}" class="btn btn-primary">📄 Download Receipt</a>
+            <a href="/saved-trips" class="btn btn-primary">View Saved Trips</a>
+            <a href="/dashboard" class="btn btn-success">Go to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

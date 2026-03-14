@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Tour Planner{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Welcome, {{ name }} </h1>
+    <p>What would you like to do today?</p>
+</div>
+
+<div class="dashboard-actions">
+    <a href="/budget" class="dash-card">
+        <div class="dash-icon">🗺️</div>
+        <h3>Explore Destinations</h3>
+        <p>Browse and plan trips to amazing places</p>
+    </a>
+
+    <a href="/car-rental" class="dash-card">
+        <div class="dash-icon">🚗</div>
+        <h3>Car Rental</h3>
+        <p>Rent a car for your journey</p>
+    </a>
+
+    <a href="/saved-trips" class="dash-card">
+        <div class="dash-icon">📌</div>
+        <h3>Saved Trips</h3>
+        <p>View your booked & saved trips</p>
+    </a>
+</div>
+{% endblock %}

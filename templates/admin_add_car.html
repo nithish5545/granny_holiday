@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Add Car — Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper" style="max-width: 600px; margin: 0 auto;">
+    <div class="card" style="text-align: left;">
+        <h2 style="text-align: center; margin-bottom: 25px;">➕ Add Rental Car</h2>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Car Type / Name</label>
+                <input type="text" id="name" name="name" placeholder="e.g., Luxury SUV, Mini Cooper" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price Per Day (₹)</label>
+                <input type="number" id="price" name="price" placeholder="e.g., 4500" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image_url">Background Image URLs (One per line)</label>
+                <textarea id="image_url" name="image_url" rows="4" placeholder="https://images.unsplash.com/photo-example-1&#10;https://images.unsplash.com/photo-example-2" required></textarea>
+                <small style="color: var(--text-muted); margin-top: 5px; display: block;">These images will randomly fade in as the background when users select this car. Enter one URL per line.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 10px;">Save Car</button>
+        </form>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/admin/cars" class="back-link">← Back to Cars</a>
+    </div>
+</div>
+{% endblock %}

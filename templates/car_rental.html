@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Car Rental — Tour Planner{% endblock %}
+
+{% block content %}
+<div class="rental-wrapper">
+    <div class="rental-card">
+        <h2>🚗 Car Rental</h2>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="car_id">Car Type</label>
+                <select name="car_id" id="car_id" required>
+                    {% for car in cars %}
+                    <option value="{{ car.id }}" data-bg="{{ car.image_url }}">{{ car.name }} — ₹{{ car.price }}/day</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="start_date">Rental Start Date</label>
+                <input type="date" id="start_date" name="start_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="days">Number of Days</label>
+                <input type="number" id="days" name="days" min="1" placeholder="Enter number of days" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;">Calculate & Save</button>
+        </form>
+
+        <script>
+            // Set min date to today
+            document.getElementById('start_date').min = new Date().toISOString().split("T")[0];
+        </script>
+
+        {% if result %}
+        <style>
+            .car-animation-scene {
+                position: relative;
+                width: 100%;
+                height: 100px;
+                overflow: hidden;
+                margin-bottom: 20px;
+                border-radius: var(--radius-sm);
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+            }
+            
+            .road {
+                position: absolute;
+                bottom: 20px;
+                width: 200%;
+                height: 6px;
+                background: #334155;
+            }
+
+            .road::after {
+                content: '';
+                position: absolute;
+                top: 2px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background: repeating-linear-gradient(90deg, transparent, transparent 15px, #facc15 15px, #facc15 35px);
+                animation: roadMove 0.5s linear infinite;
+            }
+
+            .car-emoji {
+                position: absolute;
+                bottom: 22px;
+                left: -60px;
+                font-size: 3.5rem;
+                animation: driveIn 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+                z-index: 10;
+            }
+            
+            .smoke {
+                position: absolute;
+                bottom: 30px;
+                left: -20px;
+                font-size: 1.5rem;
+                opacity: 0;
+                animation: smokePuff 2s ease-out forwards;
+            }
+
+            .road.stop-anim::after {
+                animation-play-state: paused;
+            }
+
+            .rental-result-animated {
+                opacity: 0;
+                transform: translateY(20px);
+                animation: popIn 0.5s ease 2s forwards;
+                text-align: center;
+            }
+
+            @keyframes roadMove {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50px); }
+            }
+
+            @keyframes driveIn {
+                0% { left: -60px; transform: scaleX(1); }
+                10% { left: 0%; transform: scaleX(1); }
+                70% { left: 50%; transform: scaleX(1) translateX(-50%) rotate(-2deg); }
+                80% { left: 50%; transform: scaleX(1) translateX(-50%) rotate(2deg); }
+                100% { left: 50%; transform: scaleX(1) translateX(-50%) rotate(0deg); }
+            }
+            
+            @keyframes smokePuff {
+                0% { opacity: 0; left: -20px; }
+                20% { opacity: 0.8; left: 10%; transform: scale(1.5); }
+                70% { opacity: 0; left: 40%; transform: scale(3) translateY(-20px); }
+                100% { opacity: 0; left: 40%; }
+            }
+
+            @keyframes popIn {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+        
+        <div class="car-animation-scene">
+            <div class="road"></div>
+            <div class="smoke">💨</div>
+            <div class="car-emoji">🚗</div>
+        </div>
+        
+        <div class="rental-result rental-result-animated">
+            <h3 style="color: var(--success); margin-bottom: 8px;">✅ Booking Confirmed!</h3>
+            Total Rental Cost: <strong>₹{{ total }}</strong>
+        </div>
+        
+        <script>
+            setTimeout(() => {
+                document.querySelector('.road')?.classList.add('stop-anim');
+            }, 1400); // Stop road motion matching car stopping pattern
+        </script>
+        {% endif %}
+
+        <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
+</div>
+
+<style>
+    /* Dynamic Background Styles */
+    body {
+        transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-blend-mode: overlay;
+        /* Default background color from design system */
+        background-color: var(--bg-primary);
+    }
+
+    body.has-bg-image {
+        background-color: rgba(15, 23, 42, 0.85); /* Dark overlay to maintain text readability */
+    }
+    
+    /* Ensure the rental wrapper is visible over the background */
+    .rental-wrapper {
+        position: relative;
+        z-index: 10;
+        background: transparent; /* Let the body background show through */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const carSelect = document.getElementById('car_id');
+        
+        function updateBackground() {
+            const selectedOption = carSelect.options[carSelect.selectedIndex];
+            if (!selectedOption) return;
+            
+            const bgData = selectedOption.getAttribute('data-bg');
+            if (bgData) {
+                try {
+                    // Try parsing as JSON array natively 
+                    // Need to replace single quotes with double quotes if needed, 
+                    // though json.dumps from python uses double quotes
+                    const urls = JSON.parse(bgData);
+                    if (Array.isArray(urls) && urls.length > 0) {
+                        // Pick a random URL from the array
+                        const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+                        document.body.style.backgroundImage = `url('${randomUrl}')`;
+                        document.body.classList.add('has-bg-image');
+                    } else if (typeof urls === 'string' && urls.trim() !== "") {
+                        // Fallback for old single-string data
+                        document.body.style.backgroundImage = `url('${urls}')`;
+                        document.body.classList.add('has-bg-image');
+                    }
+                } catch (e) {
+                     // Fallback if parsing fails (e.g. standard string URL)
+                     if (bgData.trim() !== "") {
+                         document.body.style.backgroundImage = `url('${bgData}')`;
+                         document.body.classList.add('has-bg-image');
+                     }
+                }
+            } else {
+                document.body.style.backgroundImage = 'none';
+                document.body.classList.remove('has-bg-image');
+            }
+        }
+
+        // Listen for changes
+        carSelect.addEventListener('change', updateBackground);
+        
+        // Set initial background on page load
+        updateBackground();
+    });
+</script>
+{% endblock %}

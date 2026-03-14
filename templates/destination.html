@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ place.name }} — Tour Planner{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="dest-detail">
+
+    <a href="/budget" class="back-link">← Back to Destinations</a>
+
+    <div class="page-header mt-3">
+        <h1>{{ place.name }}</h1>
+    </div>
+
+    <img src="{{ place.image_url }}" alt="{{ place.name }}" class="hero-img">
+
+    <div class="card">
+        <h3>💰 Cost Breakdown (per day)</h3>
+        <div class="cost-grid">
+            <div class="cost-item">
+                <div class="label">Hotel</div>
+                <div class="amount">₹{{ place.hotel_cost }}</div>
+            </div>
+            <div class="cost-item">
+                <div class="label">Food</div>
+                <div class="amount">₹{{ place.food_cost }}</div>
+            </div>
+            <div class="cost-item">
+                <div class="label">Sightseeing</div>
+                <div class="amount">₹{{ place.sightseeing_cost }}</div>
+            </div>
+        </div>
+    </div>
+
+    {% if itinerary %}
+    <div class="card" style="text-align: left;">
+        <h3 style="text-align: center;">📍 Tour Itinerary</h3>
+        <div style="margin-top: 20px;">
+            {% for item in itinerary %}
+            <div style="margin-bottom: 25px; padding-left: 20px; border-left: 3px solid var(--accent); display: flex; flex-direction: column; gap: 10px;">
+                <div>
+                    <h4 style="color: var(--accent); margin-bottom: 5px;">Day {{ item.day }}: {{ item.title }}</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 5px;">{{ item.desc }}</p>
+                </div>
+                {% if item.image %}
+                <img src="{{ item.image }}" alt="{{ item.title }}" style="width: 100%; max-width: 400px; height: 200px; object-fit: cover; border-radius: var(--radius-sm);">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>📅 Book This Trip</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label for="start_date">Travel Start Date</label>
+                <input type="date" id="start_date" name="start_date" required>
+            </div>
+            <div class="form-group">
+                <label for="days">Number of Days</label>
+                <input type="number" id="days" name="days" min="1" placeholder="Enter number of days" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Calculate & Book</button>
+        </form>
+
+        <script>
+            // Set min date to today
+            const dateInput = document.getElementById('start_date');
+            if (dateInput) {
+                dateInput.min = new Date().toISOString().split("T")[0];
+            }
+        </script>
+    </div>
+
+</div>
+{% endblock %}

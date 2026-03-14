@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Add Destination — Tour Planner{% endblock %}
+
+{% block content %}
+<div class="admin-form-wrapper">
+    <div class="page-header">
+        <h1>➕ Add Destination</h1>
+        <p>Add a new travel destination to the platform</p>
+    </div>
+
+    <div class="card">
+        <form method="POST">
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" id="state" name="state" placeholder="e.g. Tamil Nadu" required>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Destination Name</label>
+                <input type="text" id="name" name="name" placeholder="e.g. Ooty" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hotel">Hotel Cost (₹/day)</label>
+                <input type="number" id="hotel" name="hotel" placeholder="e.g. 2500" required>
+            </div>
+
+            <div class="form-group">
+                <label for="food">Food Cost (₹/day)</label>
+                <input type="number" id="food" name="food" placeholder="e.g. 800" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sight">Sightseeing Cost (₹/day)</label>
+                <input type="number" id="sight" name="sight" placeholder="e.g. 500" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Image URL</label>
+                <input type="url" id="image" name="image" placeholder="https://example.com/photo.jpg" required>
+            </div>
+
+            <div class="form-group">
+                <label>Itinerary (Day-by-Day Plan)</label>
+                <div id="itinerary-container">
+                    <!-- Dynamic days will be injected here -->
+                </div>
+                <button type="button" class="btn btn-outline" onclick="addDay()" style="margin-top: 10px; font-size: 0.9rem; padding: 6px 12px;">➕ Add Another Day</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 20px;">Add Destination</button>
+        </form>
+    </div>
+
+    <a href="/admin" class="back-link">← Back to Admin</a>
+</div>
+
+<script>
+    const container = document.getElementById('itinerary-container');
+    let dayCount = 0;
+
+    function createDayHTML(dayNum) {
+        return `
+            <div class="itinerary-day" id="day-block-${dayNum}" style="border: 1px solid var(--border); padding: 15px; margin-bottom: 15px; border-radius: var(--radius-sm); position: relative;">
+                <button type="button" onclick="removeDay(${dayNum})" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem;">&times;</button>
+                <h4 style="margin-top: 0; margin-bottom: 15px; color: var(--accent);">Day <span class="day-number">${dayNum}</span></h4>
+                
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="hidden" name="itin_day[]" value="${dayNum}" class="itin-day-input">
+                    <input type="text" name="itin_title[]" placeholder="Title (e.g., Arrival & City Tour)" required style="width: 100%;">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <textarea name="itin_desc[]" placeholder="Description of the day's activities" required rows="3" style="width: 100%;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="url" name="itin_image[]" placeholder="Image URL (optional)" style="width: 100%;">
+                </div>
+            </div>
+        `;
+    }
+
+    function addDay() {
+        dayCount++;
+        container.insertAdjacentHTML('beforeend', createDayHTML(dayCount));
+        updateDayNumbers();
+    }
+
+    function removeDay(id) {
+        document.getElementById(`day-block-${id}`).remove();
+        updateDayNumbers();
+    }
+
+    function updateDayNumbers() {
+        // Re-number the days sequentially
+        const blocks = container.querySelectorAll('.itinerary-day');
+        dayCount = blocks.length;
+        blocks.forEach((block, index) => {
+            const newDayNum = index + 1;
+            block.querySelector('.day-number').textContent = newDayNum;
+            block.querySelector('.itin-day-input').value = newDayNum;
+        });
+    }
+
+    // Start with one empty day by default
+    addDay();
+</script>
+{% endblock %}

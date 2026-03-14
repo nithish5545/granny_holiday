@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Destinations — Tour Planner{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🗺️ Select Your Destination</h1>
+    <p>Choose from our curated collection of travel spots</p>
+</div>
+
+<div class="destinations-grid">
+    {% for d in destinations %}
+    <a href="/destination/{{ d.id }}" class="dest-card">
+        <img src="{{ d.image_url }}" alt="{{ d.name }}">
+        <div class="dest-card-body">
+            <h3>{{ d.name }}</h3>
+            <span class="state-tag">{{ d.state }}</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+{% if not destinations %}
+<div class="empty-state">
+    <div class="empty-icon">🏖️</div>
+    <p>No destinations available yet. Check back soon!</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Trips — Admin | Tour Planner{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>✈️ Manage User Trips</h1>
+    <a href="/admin" class="btn btn-outline">← Back to Dashboard</a>
+</div>
+
+{% if trips %}
+<div class="trips-list" style="max-width: 800px;">
+    {% for t in trips %}
+    <div class="trip-card">
+        <div class="trip-info">
+            <h3>{{ t.destination }}</h3>
+            <div class="trip-meta">
+                <strong>User:</strong> {{ t.user_name }} &bull;
+                <strong>Duration:</strong> {{ t.days }} day{{ 's' if t.days != 1 else '' }}
+            </div>
+            <div class="trip-cost">₹{{ t.total_cost }}</div>
+        </div>
+        <div class="admin-actions">
+            <a href="/admin/delete_trip/{{ t.id }}" class="btn btn-danger"
+               onclick="return confirm('Delete this trip for {{ t.user_name }}?')">
+                Cancel Trip
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <p>No trips have been booked by users yet.</p>
+</div>
+{% endif %}
+{% endblock %}

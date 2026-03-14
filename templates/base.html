@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tour Planner{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    {% block head %}{% endblock %}
+</head>
+<body class="theme-dark" id="appBody">
+
+{% if session.get("user_id") %}
+<nav class="navbar">
+    <div class="navbar-brand">🌍 Tour Planner</div>
+    <div class="navbar-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/budget">Destinations</a>
+        <a href="/car-rental">Car Rental</a>
+        <a href="/saved-trips">Saved Trips</a>
+        {% if session.get("is_admin") %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+        <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+</nav>
+{% endif %}
+
+<main class="main-content">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <p>&copy; 2026 Tour Planner &mdash; Plan your perfect trip</p>
+</footer>
+
+<!-- Global Theme Selector -->
+<div class="bg-selector" id="bgSelector">
+    <span class="bg-selector-label">Theme</span>
+    <div class="bg-option bg-option-dark active" id="bgDark" title="Default Dark" onclick="switchTheme('dark')"></div>
+    <div class="bg-option bg-option-white" id="bgWhite" title="White / Clean" onclick="switchTheme('white')"></div>
+    <div class="bg-option bg-option-pro" id="bgPro" title="GT Holidays Professional" onclick="switchTheme('professional')"></div>
+</div>
+
+<script>
+function switchTheme(theme) {
+    const body = document.getElementById('appBody');
+    body.classList.remove('theme-dark', 'theme-white', 'theme-professional');
+    body.classList.add('theme-' + theme);
+
+    document.querySelectorAll('.bg-option').forEach(el => el.classList.remove('active'));
+    const map = { dark: 'bgDark', white: 'bgWhite', professional: 'bgPro' };
+    document.getElementById(map[theme]).classList.add('active');
+
+    localStorage.setItem('siteTheme', theme);
+}
+
+(function() {
+    const saved = localStorage.getItem('siteTheme');
+    if (saved) switchTheme(saved);
+})();
+</script>
+
+</body>
+</html>
