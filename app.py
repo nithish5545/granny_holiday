@@ -4,8 +4,7 @@ import json
 from flask import Flask, render_template, request, redirect, session, url_for, send_file
 from fpdf import FPDF
 import pymysql
-pymysql.install_as_MySQLdb()
-from mysql.connector import Error
+from pymysql import Error
 import config
 
 
@@ -20,7 +19,7 @@ DB_CONFIG = config.DB_CONFIG
 # ================= DATABASE HELPERS =================
 def get_db_connection():
     """Return a MySQL connection with dict-style row access."""
-    conn = mysql.connector.connect(**DB_CONFIG)
+    conn = pymysql.connect(**DB_CONFIG)
     return conn
 
 
@@ -42,11 +41,11 @@ def fetchall_as_dict(cursor):
 def init_db():
     try:
         # Connect without specifying DB first to create it if needed
-        base_conn = mysql.connector.connect(
+        base_conn = pymysql.connect(
             host=DB_CONFIG["host"],
             user=DB_CONFIG["user"],
             password=DB_CONFIG["password"],
-            charset=DB_CONFIG["charset"]
+            charset=DB_CONFIG.get("charset", "utf8mb4")
         )
         base_cursor = base_conn.cursor()
         base_cursor.execute(
@@ -835,5 +834,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    # Use FLASK_DEBUG=true in .env for local development
     app.run(debug=config.DEBUG, port=int(os.environ.get("PORT", 5000)))
