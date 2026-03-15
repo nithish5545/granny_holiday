@@ -12,6 +12,11 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = config.SECRET_KEY
 
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
+
 # ================= DATABASE CONFIG =================
 DB_CONFIG = config.DB_CONFIG
 
